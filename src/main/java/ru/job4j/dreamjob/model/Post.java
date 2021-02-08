@@ -1,5 +1,7 @@
 package ru.job4j.dreamjob.model;
 
+import java.util.Objects;
+
 public class Post {
     private int id;
     private String name;
