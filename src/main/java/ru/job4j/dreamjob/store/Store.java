@@ -9,8 +9,8 @@ import ru.job4j.dreamjob.model.Post;
 
 public class Store {
     private static final Store INST = new Store();
-    private Map<Integer, Post> posts = new ConcurrentHashMap<>();
-    private Map<Integer, Candidate> candidates = new ConcurrentHashMap<>();
+    private final Map<Integer, Post> posts = new ConcurrentHashMap<>();
+    private final Map<Integer, Candidate> candidates = new ConcurrentHashMap<>();
 
     private Store() {
         posts.put(1, new Post(1, "Junior Java Job", "Java SE", "2020-01-25"));
