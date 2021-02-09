@@ -2,6 +2,7 @@ package ru.job4j.dreamjob.servlet;
 
 import ru.job4j.dreamjob.model.Candidate;
 import ru.job4j.dreamjob.store.MemStore;
+import ru.job4j.dreamjob.store.PsqlStore;
 import ru.job4j.dreamjob.store.Store;
 
 import javax.servlet.ServletException;
@@ -11,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class CandidateServlet extends HttpServlet {
-    private final Store store = MemStore.instOf();
+    private final Store store = PsqlStore.instOf();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
