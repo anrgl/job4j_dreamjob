@@ -9,7 +9,7 @@ import ru.job4j.dreamjob.model.Candidate;
 import ru.job4j.dreamjob.model.Post;
 
 public class Store {
-    private static AtomicInteger POST_ID = new AtomicInteger(4);
+    private static AtomicInteger postId = new AtomicInteger(4);
     private static final Store INST = new Store();
     private final Map<Integer, Post> posts = new ConcurrentHashMap<>();
     private final Map<Integer, Candidate> candidates = new ConcurrentHashMap<>();
@@ -40,7 +40,7 @@ public class Store {
 
     public void save(Post post) {
         if (post.getId() == 0) {
-            post.setId(POST_ID.incrementAndGet());
+            post.setId(postId.incrementAndGet());
         }
         posts.put(post.getId(), post);
     }
@@ -51,7 +51,7 @@ public class Store {
 
     public void save(Candidate candidate) {
         if (candidate.getId() == 0) {
-            candidate.setId(POST_ID.incrementAndGet());
+            candidate.setId(postId.incrementAndGet());
         }
         candidates.put(candidate.getId(), candidate);
     }
