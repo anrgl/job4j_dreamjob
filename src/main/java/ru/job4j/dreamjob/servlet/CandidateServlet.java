@@ -1,6 +1,7 @@
 package ru.job4j.dreamjob.servlet;
 
 import ru.job4j.dreamjob.model.Candidate;
+import ru.job4j.dreamjob.store.MemStore;
 import ru.job4j.dreamjob.store.Store;
 
 import javax.servlet.ServletException;
@@ -10,10 +11,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class CandidateServlet extends HttpServlet {
+    private final Store store = MemStore.instOf();
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        req.setAttribute("candidates", Store.instOf().findAllCandidates());
+        req.setAttribute("candidates", store.findAllCandidates());
         req.getRequestDispatcher("candidates.jsp").forward(req, resp);
     }
 
@@ -21,7 +24,7 @@ public class CandidateServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
-        Store.instOf().save(
+        store.save(
                 new Candidate(Integer.valueOf(req.getParameter("id")),
                         req.getParameter("name"))
         );
