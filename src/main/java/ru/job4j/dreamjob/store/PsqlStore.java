@@ -64,7 +64,7 @@ public class PsqlStore implements Store {
                 }
             }
         } catch (Exception e) {
-            LOG.error(e);
+            LOG.error("Error when searching for all posts", e);
         }
         return posts;
     }
@@ -80,7 +80,7 @@ public class PsqlStore implements Store {
                 }
             }
         } catch (Exception e) {
-            LOG.error(e);
+            LOG.error("Error when searching for all posts", e);
         }
         return candidates;
     }
@@ -105,7 +105,7 @@ public class PsqlStore implements Store {
                 }
             }
         } catch (Exception e) {
-            LOG.error(e);
+            LOG.error("Error when searching post by id: " + id, e);
         }
         return null;
     }
@@ -130,7 +130,7 @@ public class PsqlStore implements Store {
                 }
             }
         } catch (Exception e) {
-            LOG.error(e);
+            LOG.error("Error when searching for candidate by id: " + id, e);
         }
         return null;
     }
@@ -148,7 +148,7 @@ public class PsqlStore implements Store {
                 }
             }
         } catch (Exception e) {
-            LOG.error(e);
+            LOG.error("Error when creating post", e);
         }
     }
 
@@ -161,7 +161,7 @@ public class PsqlStore implements Store {
             ps.setInt(2, post.getId());
             ps.execute();
         } catch (Exception e) {
-            LOG.error(e);
+            LOG.error("Error when updating post", e);
         }
     }
 
@@ -178,7 +178,7 @@ public class PsqlStore implements Store {
                 }
             }
         } catch (Exception e) {
-            LOG.error(e);
+            LOG.error("Error when creating candidate", e);
         }
     }
 
@@ -191,7 +191,7 @@ public class PsqlStore implements Store {
             ps.setInt(2, candidate.getId());
             ps.execute();
         } catch (Exception e) {
-            LOG.error(e);
+            LOG.error("Error when updating candidate", e);
         }
     }
 }
