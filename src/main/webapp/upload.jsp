@@ -11,31 +11,51 @@
 </head>
 <body>
 <div class="container">
-    <table class="table">
-        <thead>
-        <tr>
-            <th>URL</th>
-            <th>View</th>
-        </tr>
-        </thead>
-        <tbody>
-        <c:forEach items="${images}" var="image" varStatus="status">
-            <tr valign="top">
-                <td><a href="<c:url value='/download?name=${image}'/>">Download</a></td>
-                <td>
-                    <img src="<c:url value='/download?name=${image}' />" width="100px" height="100px"/>
-                </td>
+    <div class="row">
+        <ul class="nav">
+            <li class="nav-item">
+                <a class="nav-link" href="<%=request.getContextPath()%>/posts.do">Вакансии</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="<%=request.getContextPath()%>/candidates.do">Кандидаты</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="<%=request.getContextPath()%>/post/edit.jsp">Добавить вакансию</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="<%=request.getContextPath()%>/candidate/edit.jsp">Добавить кандидата</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="<%=request.getContextPath()%>/login.jsp"> <c:out value="${user.name}"/> |
+                    Выйти</a>
+            </li>
+        </ul>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>URL</th>
+                <th>View</th>
             </tr>
-        </c:forEach>
-        </tbody>
-    </table>
-    <h2>Upload image</h2>
-    <form action="<c:url value='/upload?id=${id}' />" method="post" enctype="multipart/form-data">
-        <div class="form-group">
-            <input type="file" name="file">
-        </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
+            </thead>
+            <tbody>
+            <c:forEach items="${images}" var="image" varStatus="status">
+                <tr valign="top">
+                    <td><a href="<c:url value='/download?name=${image}'/>">Download</a></td>
+                    <td>
+                        <img src="<c:url value='/download?name=${image}' />" width="100px" height="100px"/>
+                    </td>
+                </tr>
+            </c:forEach>
+            </tbody>
+        </table>
+        <h2>Upload image</h2>
+        <form action="<c:url value='/upload?id=${id}' />" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <input type="file" name="file">
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
 </div>
 </body>
 </html>
