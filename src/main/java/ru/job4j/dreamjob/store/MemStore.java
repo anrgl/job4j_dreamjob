@@ -49,14 +49,26 @@ public class MemStore implements Store {
         return posts.get(id);
     }
 
-    public void save(Candidate candidate) {
+    public int save(Candidate candidate) {
         if (candidate.getId() == 0) {
             candidate.setId(postId.incrementAndGet());
         }
         candidates.put(candidate.getId(), candidate);
+        return candidate.getId();
     }
 
     public Candidate findCandidateById(int id) {
         return candidates.get(id);
+    }
+
+    @Override
+    public int savePhoto() {
+        return 0;
+    }
+
+    @Override
+    public void updateCandidatePhotoId(int photoId, int candidateId) {
+        var candidate = candidates.get(candidateId);
+        candidate.setPhotoId(photoId);
     }
 }

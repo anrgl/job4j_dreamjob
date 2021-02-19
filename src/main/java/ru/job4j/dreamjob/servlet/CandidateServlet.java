@@ -1,7 +1,6 @@
 package ru.job4j.dreamjob.servlet;
 
 import ru.job4j.dreamjob.model.Candidate;
-import ru.job4j.dreamjob.store.MemStore;
 import ru.job4j.dreamjob.store.PsqlStore;
 import ru.job4j.dreamjob.store.Store;
 
@@ -25,10 +24,11 @@ public class CandidateServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
-        store.save(
+        int candidateId = store.save(
                 new Candidate(Integer.valueOf(req.getParameter("id")),
                         req.getParameter("name"))
         );
-        resp.sendRedirect(req.getContextPath() + "/candidates.do");
+        resp.sendRedirect(req.getContextPath() + "/upload?id=" + candidateId);
     }
+
 }

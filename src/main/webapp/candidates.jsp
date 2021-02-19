@@ -34,12 +34,16 @@
                 <table class="table">
                     <thead>
                     <tr>
-                        <th scope="col">Названия</th>
+                        <th scope="col" colspan="3">Названия</th>
                     </tr>
                     </thead>
                     <tbody>
                     <c:forEach items="${candidates}" var="candidate">
                         <tr>
+                            <td>
+                                <img src="<c:url value='/download?name=photo_${candidate.photoId}' />" width="100px" height="100px"/>
+                                <a href="<c:url value='/download?name=photo_${candidate.photoId}'/>">Download</a>
+                            </td>
                             <td>
                                 <a href="<c:url value="/candidate/edit.jsp?id=${candidate.id}" />">
                                     <i class="fa fa-edit mr-3"></i>

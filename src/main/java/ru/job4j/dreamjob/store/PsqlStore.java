@@ -1,6 +1,8 @@
 package ru.job4j.dreamjob.store;
 
 import org.apache.commons.dbcp2.BasicDataSource;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import ru.job4j.dreamjob.model.Candidate;
 import ru.job4j.dreamjob.model.Post;
 
@@ -13,8 +15,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 
 public class PsqlStore implements Store {
     private static final Logger LOG = LogManager.getLogger(PsqlStore.class.getName());
@@ -76,7 +76,10 @@ public class PsqlStore implements Store {
              PreparedStatement ps = cn.prepareStatement("select * from candidate")) {
             try (ResultSet it = ps.executeQuery()) {
                 while (it.next()) {
-                    candidates.add(new Candidate(it.getInt("id"), it.getString("name")));
+                    candidates.add(new Candidate(
+                            it.getInt("id"),
+                            it.getString("name"),
+                            it.getInt("photo_id")));
                 }
             }
         } catch (Exception e) {
@@ -111,12 +114,11 @@ public class PsqlStore implements Store {
     }
 
     @Override
-    public void save(Candidate candidate) {
+    public int save(Candidate candidate) {
         if (candidate.getId() == 0) {
-            create(candidate);
-        } else {
-            update(candidate);
+            return create(candidate);
         }
+        return update(candidate);
     }
 
     @Override
@@ -135,11 +137,42 @@ public class PsqlStore implements Store {
         return null;
     }
 
+    @Override
+    public int savePhoto() {
+        int id = 0;
+        try (Connection cn = pool.getConnection();
+             PreparedStatement ps = cn.prepareStatement("insert into photo default values",
+                     PreparedStatement.RETURN_GENERATED_KEYS)) {
+            ps.execute();
+            try (ResultSet result = ps.getGeneratedKeys()) {
+                if (result.next()) {
+                    id = result.getInt(1);
+                }
+            }
+        } catch (Exception e) {
+            LOG.error("Error when save photo", e);
+        }
+        return id;
+    }
+
+    @Override
+    public void updateCandidatePhotoId(int photoId, int candidateId) {
+        try (Connection cn = pool.getConnection();
+             PreparedStatement ps = cn.prepareStatement(
+                     "update candidate set photo_id = ? where id = ?")) {
+            ps.setInt(1, photoId);
+            ps.setInt(2, candidateId);
+            ps.execute();
+        } catch (Exception e) {
+            LOG.error("Error when save photo", e);
+        }
+    }
+
     private void create(Post post) {
         try (Connection cn = pool.getConnection();
-            PreparedStatement ps = cn.prepareStatement(
-                    "insert into post(name) values (?)",
-                    PreparedStatement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement ps = cn.prepareStatement(
+                     "insert into post(name) values (?)",
+                     PreparedStatement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, post.getName());
             ps.execute();
             try (ResultSet id = ps.getGeneratedKeys()) {
@@ -154,9 +187,9 @@ public class PsqlStore implements Store {
 
     private void update(Post post) {
         try (Connection cn = pool.getConnection();
-            PreparedStatement ps = cn.prepareStatement(
-                    "update post set name = ? where id = ?"
-            )) {
+             PreparedStatement ps = cn.prepareStatement(
+                     "update post set name = ? where id = ?"
+             )) {
             ps.setString(1, post.getName());
             ps.setInt(2, post.getId());
             ps.execute();
@@ -165,7 +198,8 @@ public class PsqlStore implements Store {
         }
     }
 
-    private void create(Candidate candidate) {
+    private int create(Candidate candidate) {
+        int result = 0;
         try (Connection cn = pool.getConnection();
              PreparedStatement ps = cn.prepareStatement(
                      "insert into candidate(name) values (?)",
@@ -174,15 +208,17 @@ public class PsqlStore implements Store {
             ps.execute();
             try (ResultSet id = ps.getGeneratedKeys()) {
                 if (id.next()) {
-                    candidate.setId(id.getInt(1));
+                    result = id.getInt(1);
+                    candidate.setId(result);
                 }
             }
         } catch (Exception e) {
             LOG.error("Error when creating candidate", e);
         }
+        return result;
     }
 
-    private void update(Candidate candidate) {
+    private int update(Candidate candidate) {
         try (Connection cn = pool.getConnection();
              PreparedStatement ps = cn.prepareStatement(
                      "update candidate set name = ? where id = ?"
@@ -193,5 +229,6 @@ public class PsqlStore implements Store {
         } catch (Exception e) {
             LOG.error("Error when updating candidate", e);
         }
+        return candidate.getId();
     }
 }
