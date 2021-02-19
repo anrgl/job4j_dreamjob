@@ -5,6 +5,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import ru.job4j.dreamjob.model.Candidate;
 import ru.job4j.dreamjob.model.Post;
+import ru.job4j.dreamjob.model.User;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -166,6 +167,47 @@ public class PsqlStore implements Store {
         } catch (Exception e) {
             LOG.error("Error when save photo", e);
         }
+    }
+
+    @Override
+    public void save(User user) {
+        try (Connection cn = pool.getConnection();
+             PreparedStatement ps = cn.prepareStatement(
+                     "insert into \"user\"(name, email, password) values (?, ?, ?)",
+                     PreparedStatement.RETURN_GENERATED_KEYS)) {
+            ps.setString(1, user.getName());
+            ps.setString(2, user.getEmail());
+            ps.setString(3, user.getPassword());
+            ps.execute();
+            try (ResultSet id = ps.getGeneratedKeys()) {
+                if (id.next()) {
+                    user.setId(id.getInt(1));
+                }
+            }
+        } catch (Exception e) {
+            LOG.error("Error when creating user", e);
+        }
+    }
+
+    @Override
+    public User findUserByEmail(String email) {
+        try (Connection cn = pool.getConnection();
+             PreparedStatement ps = cn.prepareStatement(
+                     "select id, name, email, password from \"user\" where email = ?")) {
+            ps.setString(1, email);
+            ps.execute();
+            try (ResultSet result = ps.executeQuery()) {
+                if (result.next()) {
+                    int id = result.getInt("id");
+                    String name = result.getString("name");
+                    String password = result.getString("password");
+                    return new User(id, name, email, password);
+                }
+            }
+        } catch (Exception e) {
+            LOG.error("Error when searching user", e);
+        }
+        return null;
     }
 
     private void create(Post post) {

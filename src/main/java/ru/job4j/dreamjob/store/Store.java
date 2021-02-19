@@ -23,9 +23,7 @@ public interface Store {
 
     void updateCandidatePhotoId(int photoId, int candidateId);
 
-    int save(User user);
+    void save(User user);
 
-    Collection<User> findAllUsers();
-
-    User findUserById(int id);
+    User findUserByEmail(String email);
 }
