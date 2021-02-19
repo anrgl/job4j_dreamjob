@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import ru.job4j.dreamjob.model.Candidate;
 import ru.job4j.dreamjob.model.Post;
+import ru.job4j.dreamjob.model.User;
 
 public interface Store {
     Collection<Post> findAllPosts();
@@ -21,4 +22,10 @@ public interface Store {
     int savePhoto();
 
     void updateCandidatePhotoId(int photoId, int candidateId);
+
+    int save(User user);
+
+    Collection<User> findAllUsers();
+
+    User findUserById(int id);
 }
